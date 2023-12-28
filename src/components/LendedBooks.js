@@ -1,27 +1,48 @@
-import axios from 'axios'
-import React, { useEffect, useState } from 'react'
-import { Api } from './GlobalApi'
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import { Api } from './GlobalApi';
 
 export const LendedBooks = () => {
-const [loanedData,setLoanedData]=useState([])
-const [refreshPage,setRefreshPage]=useState(true)
-  useEffect(()=>{
-    async function fetch(){
-     const res= await axios.get(`${Api}/allorders/books`)
-      setLoanedData(res.data)
+  const [loanedData, setLoanedData] = useState([]);
+  const [refreshPage, setRefreshPage] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    async function fetchData() {
+      setLoading(true);
+      try {
+        const response = await axios.get(`${Api}/allorders/books`);
+        setLoanedData(response.data);
+      } catch (error) {
+        console.error('Error fetching loaned books:', error);
+        setError('An error occurred while fetching loaned books.');
+      } finally {
+        setLoading(false);
+      }
     }
-    fetch()
-  },[refreshPage])
-  const handleReturn= async(id)=>{
-const res= await axios.put(`${Api}/returned/${id}`)
-    if(res.status===200){
-      alert(res.data)
-      setRefreshPage(!refreshPage)
+
+    fetchData();
+  }, [refreshPage]);
+
+  const handleReturn = async (id) => {
+    try {
+      const response = await axios.put(`${Api}/returned/${id}`);
+      if (response.status === 200) {
+        alert(response.data);
+        setRefreshPage(!refreshPage);
+      }
+    } catch (error) {
+      console.error('Error handling return:', error);
+      alert('Failed to handle the return. Please try again.');
     }
-  }
+  };
+
   return (
-    <div style={{display:"flex",justifyContent:"center"}}>
-    <table style={{textAlign:"center"}} className="table">
+    <div style={{ display: 'flex', justifyContent: 'center' }}>
+      {loading && <p>Loading...</p>}
+      {error && <p>Error: {error}</p>}
+      <table style={{ textAlign: 'center' }} className="table">
     <thead>
       <tr>
       <th>Book</th>

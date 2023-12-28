@@ -1,35 +1,38 @@
+/* eslint-disable no-undef */
 import React  from 'react'
 // eslint-disable-next-line no-unused-vars
-import { Formik } from 'formik';
+import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import axios from "axios"
 import { Api } from './GlobalApi'
 export const AddnewbookForm = () => {
-    const validationSchema = Yup.object().shape({
+  const validationSchema = Yup.object().shape({
         book: Yup.string().required('Book Name is required'),
         author: Yup.string().required('Author is required'),
         language: Yup.string().required('Language is required'),
         year: Yup.string().required('Year of release is required'),
         url:Yup.string().url("invalid url").required("image url is reqired")
       });
-    const formik= Formik({
-        initialValues:{
-            book:"",
-            author:"",
-            language:"",
-            year:"",
-            url:""
-        },
-        onSubmit: (values,{resetForm})=>{
-            axios.post(`${Api}/newbook`,{book:values})
-            .then((res)=>alert(res.data))
-            .then(()=>resetForm())
-        },
-       validationSchema:validationSchema
-    })
+      
+  const formik = useFormik({
+    initialValues: {
+      book: "",
+      author: "",
+      language: "",
+      year: "",
+      url: ""
+    },
+    onSubmit: (values, { resetForm }) => {
+      axios.post(`${Api}/newbook`, values)
+        .then((res) => alert(res.data))
+        .then(() => resetForm());
+    },
+    validationSchema: validationSchema
+  });
 
 
   return (
+    <form onSubmit={formik.handleSubmit}>
     <div className='outter-container'>
     <div className='issue-book-form-container'>
         <h1> Issue book to a User </h1>
@@ -58,9 +61,10 @@ export const AddnewbookForm = () => {
         {formik.touched.url && formik.errors.url && (
               <div className='error'>{formik.errors.url}</div>
             )}
-        <button onClick={formik.handleSubmit} type='submit'>Submit</button>
+        <button  type='submit'>Submit</button>
     </div>
 
 </div>
+</form>
   )
 }

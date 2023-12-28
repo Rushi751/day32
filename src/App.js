@@ -2,7 +2,7 @@ import { Route, Routes } from 'react-router-dom';
 import './App.css';
 import { Dashboard } from './components/Dashboard';
 import { Header } from './components/Header';
-import { NewBookIssueForm } from './components/NewBookIssueForm';
+import NewBookIssueForm from './components/NewBookIssueForm';
 import { NewUserForm } from './components/NewUserForm';
 import { BookList } from './components/BookList';
 import { AddnewbookForm } from './components/AddnewbookForm';
